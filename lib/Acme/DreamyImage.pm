@@ -1,5 +1,5 @@
 package Acme::DreamyImage;
-our $VERSION = '0.90';
+our $VERSION = '1.0';
 
 use common::sense;
 use Object::Tiny qw(seed width height);
