@@ -69,7 +69,6 @@ sub random_image {
         $xsize, $ysize,
         sub {
             my ($layer) = @_;
-            my $layer = Imager->new(xsize => $xsize, ysize => $ysize, channels => 4);
             $layer->filter(type => "noise", subtype => 0, amout => 20);
             for my $size (map { ($xsize + $ysize) / 16 + $_ } 1..20) {
                 my ($x, $y) = ($self->random($xsize), $self->random($ysize));
