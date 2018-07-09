@@ -5,7 +5,7 @@ perl:
   - "5.22"
 
 before_install:
-  - cpanm --notest App::ModuleBuildTiny Devel::Cover Devel::Cover::Report::Coveralls Test2::Harness
+  - cpanm --notest App::ModuleBuildTiny Test2::Harness
 
 script:
   yath test -j4 --qvf
