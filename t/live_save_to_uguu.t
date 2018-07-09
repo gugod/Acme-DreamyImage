@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 
 use JSON::PP 'encode_json';
-use Acme::Dreamyimage;
+use Acme::DreamyImage;
 
 my $output_file = "dreamy_" . int(rand(12345678)) . ".jpg";
 my $seed = $output_file . time . $$;
