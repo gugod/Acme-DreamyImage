@@ -2,7 +2,7 @@ package Acme::DreamyImage;
 use strict;
 use warnings;
 
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 
 use Object::Tiny qw(seed width height);
 use self;
