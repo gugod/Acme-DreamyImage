@@ -41,6 +41,12 @@ sub random_color {
     return [map { $self->random(255) } 1..4]
 }
 
+my @types = Imager->combines;
+sub random_combine_type {
+    my $i = $self->random( 0+ @types );
+    return $types[$i];
+}
+
 sub random_background {
     my $image = Imager->new(xsize => $self->width, ysize => $self->height, channels => 3);
     $image->box(filled => 1, color => [255, 255, 255]);
@@ -67,6 +73,26 @@ sub random_image {
     my $xsize = $self->width;
     my $ysize = $self->height;
 
+    new_layer(
+        $xsize, $ysize,
+        sub {
+            my ($layer) = @_;
+            my $xymax = $xsize > $ysize ? $xsize : $ysize;
+            for (1..$self->random(24)) {
+                $layer->arc(
+                    color => $self->random_color,
+                    r => $self->random($xymax),
+                    x => $self->random($xsize),
+                    y => $self->random($ysize),
+                    d1 => $self->random(180),
+                    d2 => $self->random(360),
+                );
+            }
+            $layer->filter(type => "gaussian", stddev => $self->random(30));
+            $image->compose(src => $layer, tx => 0, ty => 0, combine => 'add');
+        }
+    ) if $self->random(6) > 2;
+
     # Big Blur Circles
     new_layer(
         $xsize, $ysize,
@@ -79,7 +105,7 @@ sub random_image {
             }
             $layer->filter(type => "gaussian", stddev => $self->random(30));
 
-            $image->compose(src => $layer, tx => 0, ty => 0, combine => 'add');
+            $image->compose(src => $layer, tx => 0, ty => 0, combine => $self->random_combine_type);
         }
     );
 
@@ -97,16 +123,38 @@ sub random_image {
             $layer->filter(type => "noise", amount => $self->random(($xsize + $ysize) /2 * 0.03 ), subtype => 1);
             $layer->filter(type => "gaussian", stddev => $self->random(30));
 
-            $image->compose(src => $layer, tx => 0, ty => 0, combine => 'add');
+            $image->compose(src => $layer, tx => 0, ty => 0, combine =>  $self->random_combine_type);
         }
     );
+
+    new_layer(
+        $xsize, $ysize,
+        sub {
+            my ($layer) = @_;
+            for (0..$self->random(48)) {
+                my @points = map {[ $self->random($xsize), $self->random($ysize) ]} 1 ... $self->random(40);
+                if ($self->random(6) > 2) {
+                    $layer->polygon( points => \@points, color => $self->random_color );
+                } else {
+                    $layer->polyline( points => \@points, color => $self->random_color, aa => 1 );
+                }
+            }
+            $layer->filter(type => "noise", amount => $self->random(($xsize + $ysize) /2 * 0.03 ), subtype => 1);
+            $layer->filter(type => "gaussian", stddev => $self->random(30));
+            $image->compose(src => $layer, tx => 0, ty => 0, combine => $self->random_combine_type);
+        }
+    ) if $self->random(6) > 2;
 
     # Small Sharp Circles
     for (1..10+$self->random(20)) {
         my $size = $self->random( ($xsize + $ysize) / 2 / 16);
         my ($x, $y) = ($self->random($xsize), $self->random($ysize));
         my $opacity = $self->random(30) + 10;
-        $image->circle(fill => { solid => [255, 255, 255, $opacity], combine => "add" },  x => $x, y => $y, r => $size);
+        if ($self->random(6) > 2) {
+            $image->circle(fill => { solid => [255, 255, 255, $opacity], combine => "add" },  x => $x, y => $y, r => $size);
+        } else {
+            $image->circle(fill => { solid => $self->random_color, combine => "add" },  x => $x, y => $y, r => $size);
+        }
     }
 
     return $image;
