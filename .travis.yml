@@ -8,7 +8,7 @@ before_install:
   - cpanm --notest App::ModuleBuildTiny Devel::Cover Devel::Cover::Report::Coveralls Test2::Harness
 
 script:
-  yath test -T -j4 --qvf
+  yath test -j4 --qvf
 
 notifications:
   irc:
