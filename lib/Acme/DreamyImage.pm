@@ -1,11 +1,14 @@
 package Acme::DreamyImage;
+use strict;
+use warnings;
+
 our $VERSION = '1.0';
 
-use common::sense;
 use Object::Tiny qw(seed width height);
+use self;
+
 use Imager qw(:handy);
 use Digest::SHA1 qw(sha1_hex);
-use self;
 
 sub new {
     $self = $self->SUPER::new(@args);
@@ -137,7 +140,7 @@ Kang-min Liu E<lt>gugod@gugod.orgE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2010, Kang-min Liu C<< <gugod@gugod.org> >>.
+Copyright (c) 2010- Kang-min Liu C<< <gugod@gugod.org> >>.
 
 This is free software, licensed under:
 
